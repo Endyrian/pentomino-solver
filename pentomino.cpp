@@ -23,14 +23,14 @@ class Pentomino {
     int getWidth();
     char getLetter();
     int getRotations();
-    bool getSymmetrical();
+    bool isSymmetrical();
   protected:
-    int shape_[blocks_][2];
-    int height_;
-    int width_;
-    char letter_;
+    int shape_[blocks_][2]; // The locacions of the piece's blocks
+    int height_; // The height of the piece measured from the centers of blocks
+    int width_; // The width of the piece measured from the centers of blocks
+    char letter_; // A letter to identify the piece by
     int rotations_; // 4 divided by order of rotational symmetry
-    bool symmetrical_; // Whether or not there is at least one line of symmetry
+    bool symmetrical_; // Whether or not the shape has reflectional symmetry
 };
 
 Pentomino::Pentomino(int shape[blocks_][2], char letter) : letter_(letter) {
@@ -108,11 +108,11 @@ Pentomino::Pentomino(int shape[blocks_][2], char letter) : letter_(letter) {
 //        }
 //    }
     if (order_4_symmetric) {
-        rotations_ = 4;
+        rotations_ = 1;
     } else if (order_2_symmetric) {
         rotations_ = 2;
     } else {
-        rotations_ = 1;
+        rotations_ = 4;
     }
 }
 
@@ -151,7 +151,7 @@ char Pentomino::getLetter() { return letter_; }
 
 int Pentomino::getRotations() { return rotations_; }
 
-bool Pentomino::getSymmetrical() { return symmetrical_; }
+bool Pentomino::isSymmetrical() { return symmetrical_; }
 
 // For testing purposes
 int main(int argc, char const *argv[]) {
@@ -166,7 +166,9 @@ int main(int argc, char const *argv[]) {
     std::cout << "Letter representation: ";
     std::cin >> letter;
     Pentomino piece = Pentomino(shape, letter);
+    std::cout << "Height: " << piece.getHeight() << '\n';
+    std::cout << "Width: " << piece.getWidth() << '\n';
     std::cout << "# of unique rotations: " << piece.getRotations() << '\n';
-    std::cout << "Reflectional symmetry: " << piece.getSymmetrical() << '\n';
+    std::cout << "Reflectional symmetry: " << piece.isSymmetrical() << '\n';
     return 0;
 }
