@@ -166,9 +166,19 @@ int main(int argc, char const *argv[]) {
     std::cout << "Letter representation: ";
     std::cin >> letter;
     Pentomino piece = Pentomino(shape, letter);
-    std::cout << "Height: " << piece.getHeight() << '\n';
-    std::cout << "Width: " << piece.getWidth() << '\n';
-    std::cout << "# of unique rotations: " << piece.getRotations() << '\n';
-    std::cout << "Reflectional symmetry: " << piece.isSymmetrical() << '\n';
+    std::cout << "Height: " << piece.getHeight() << std::endl;
+    std::cout << "Width: " << piece.getWidth() << std::endl;
+    std::cout << "# of unique rotations: " << piece.getRotations()
+              << std::endl;
+    std::cout << "Reflectional symmetry: " << piece.isSymmetrical()
+              << std::endl;
+    std::array<std::array<int, 2>, piece.blocks_> orientation;
+    orientation = piece.orientShape(!piece.isSymmetrical(),
+                                    3 % piece.getRotations());
+    std::cout << "Flipped across negative diagonal:\n";
+    for (int i = 0; i < piece.blocks_; i++) {
+        std::cout << orientation[i][0] << ' ' << orientation[i][1]
+                  << std::endl;
+    }
     return 0;
 }
