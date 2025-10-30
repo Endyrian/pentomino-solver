@@ -70,14 +70,16 @@ Pentomino::Pentomino(int shape[blocks_][2], char letter) : letter_(letter) {
     }
     symmetrical_ = vertically_symmetric || horizontally_symmetric ||
                    pos_diag_symmetric || neg_diag_symmetric;
-//    if (vertically_symmetric && !horizontally_symmetric) {
-//        int temp;
-//        for (int i = 0; i < blocks_; i++) {
-//            temp = shape_[i][0];
-//            shape_[i][0] = shape_[i][1];
-//            shape_[i][1] = temp;
-//        }
-//    }
+/*
+    if (vertically_symmetric && !horizontally_symmetric) {
+        int temp;
+        for (int i = 0; i < blocks_; i++) {
+            temp = shape_[i][0];
+            shape_[i][0] = shape_[i][1];
+            shape_[i][1] = temp;
+        }
+    }
+*/
     if (order_4_symmetric) {
         rotations_ = 1;
     } else if (order_2_symmetric) {
@@ -125,6 +127,7 @@ int Pentomino::getRotations() { return rotations_; }
 bool Pentomino::isSymmetrical() { return symmetrical_; }
 
 // For testing purposes
+/*
 int main(int argc, char const *argv[]) {
     int shape[5][2];
     for (int i = 0; i < 5; i++) {
@@ -153,3 +156,4 @@ int main(int argc, char const *argv[]) {
     }
     return 0;
 }
+*/
