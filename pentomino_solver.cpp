@@ -2,13 +2,13 @@
 
 #include <array>
 #include <vector>
-#include <algorithm>
+#include <iostream>
 
 std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
         std::vector<std::array<std::array<char, 8>, 8>> grids,
         Pentomino piece) {
     std::vector<std::array<std::array<char, 8>, 8>> added_grids;
-    // TODO
+    // TODO: test all possible placements for the piece
     return added_grids;
 }
 
@@ -27,6 +27,18 @@ int main(int argc, char const *argv[]) {
             solutions.push_back(grid);
         }
     }
-    // TODO
+    
+    // TODO: test all pentomino placements
+
+    for (auto &&solved : solutions) {
+        std::cout << "-----" << std::endl;
+        for (auto &&x : solved) {
+            for (auto &&y : x) {
+                std::cout << y << ' ';
+            }
+            std::cout << std::endl;
+        }
+    }
+    std::cout << "-----" << std::endl;
     return 0;
 }
