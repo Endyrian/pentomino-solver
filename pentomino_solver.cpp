@@ -33,7 +33,13 @@ bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
 std::array<std::array<char, 8>, 8> placePentomino(
         std::array<std::array<char, 8>, 8> grid, Pentomino piece,
         int x, int y, bool flip, int rotation) {
-    // TODO: place the piece
+    std::array<std::array<char, 8>, 8> new_grid = grid;
+    std::array<std::array<int, 2>, piece.blocks_> coords = piece.orientShape(
+            flip, rotation);
+    for (auto &&block : coords) {
+        new_grid[x + block[0]][y + block[1]] = piece.getLetter();
+    }
+    return new_grid;
 }
 
 // Returns a vector of all possible puzzle grid arrangements which can be
