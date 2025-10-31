@@ -4,6 +4,38 @@
 #include <vector>
 #include <iostream>
 
+// Returns whether `piece` can fit in `grid` at the specified location after
+//  undergoing thespecified transformations.
+bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
+                       Pentomino piece, int x, int y, bool flip,
+                       int rotation) {
+    int height = piece.getHeight();
+    int width = piece.getWidth();
+    if (rotation % 2 == 0) {
+        if (x + height >= 8 && y || width >= 8) {
+            return false;
+        }
+    } else if (y + height >= 8 && x + width >= 8) {
+        return false;
+    }
+    std::array<std::array<int, 2>, piece.blocks_> coords = piece.orientShape(
+            flip, rotation);
+    for (auto &&block : coords) {
+        if (grid[x + block[0]][y + block[1]] != '0') {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Returns a version of `grid` with `piece` added at the specified location
+// after undergoing the specified transformations.
+std::array<std::array<char, 8>, 8> placePentomino(
+        std::array<std::array<char, 8>, 8> grid, Pentomino piece,
+        int x, int y, bool flip, int rotation) {
+    // TODO: place the piece
+}
+
 // Returns a vector of all possible puzzle grid arrangements which can be
 // obtained by adding `piece` in a valid location to one of the grids in
 // `old_grids`
@@ -13,19 +45,16 @@ std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
     std::vector<std::array<std::array<char, 8>, 8>> new_grids;
     int rotations = piece.getRotations();
     bool symmetrical = piece.isSymmetrical();
-    int height = piece.getHeight();
-    int width = piece.getWidth();
     for (auto &&grid : old_grids) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 for (int i = 0; i < rotations; i++) {
-                    if (i % 2 == 0 && x + height < 8 && y + width < 8) {
-                        /* code */
-                    } else if (y + height < 8 && x + width < 8) {
-                        /* code */
+                    if (canPlacePentomino(grid, piece, x, y, false, i)) {
+                        std::array<std::array<char, 8>, 8> p_grid;
+                        p_grid = placePentomino(grid, piece, x, y, false, i);
+                        // TODO: test all possible placements for the piece
                     }
                     
-                    // TODO: test all possible placements for the piece
                 }
                 
             }
