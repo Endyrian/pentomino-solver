@@ -54,21 +54,22 @@ std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
     for (auto &&grid : old_grids) {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                for (int i = 0; i < rotations; i++) {
-                    if (canPlacePentomino(grid, piece, x, y, false, i)) {
+                for (int r = 0; r < rotations; r++) {
+                    if (canPlacePentomino(grid, piece, x, y, false, r)) {
                         std::array<std::array<char, 8>, 8> p_grid;
-                        p_grid = placePentomino(grid, piece, x, y, false, i);
-                        // TODO: test all possible placements for the piece
+                        p_grid = placePentomino(grid, piece, x, y, false, r);
+                        new_grids.push_back(p_grid);
+                        if (!symmetrical) {
+                            std::array<std::array<char, 8>, 8> f_grid;
+                            f_grid = placePentomino(grid, piece, x, y, true,
+                                                    r);
+                            new_grids.push_back(f_grid);
+                        }
                     }
-                    
                 }
-                
             }
-            
         }
-
     }
-    
     return new_grids;
 }
 
