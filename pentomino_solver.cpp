@@ -89,7 +89,11 @@ int main(int argc, char const *argv[]) {
         }
     }
     
-    // TODO: test all pentomino placements
+    std::vector<Pentomino> pieces;
+    // TODO: add pieces
+    for (auto &&piece : pieces) {
+        solutions = addPentomino(solutions, piece);
+    }
 
     for (auto &&solved : solutions) {
         std::cout << "-----" << std::endl;
