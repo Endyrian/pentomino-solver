@@ -74,11 +74,15 @@ std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
     return new_grids;
 }
 
-// Returns a vector of all possible solutions containing the piece placements
-// in `base_grid`.
+// Returns a vector of all possible solutions containing all the pieces
+// specified in `pieces`, where all pieces numbered less that `piece_number`
+// are in the same locations as they are in `base_grid`. `reflect_symmetric`
+// and `rotate_symmetric` indicate whether to assume `base_grid` is
+// reflectionally and rotationally symmetric, respectively.
 std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
         std::array<std::array<char, 8>, 8> base_grid,
-        std::vector<Pentomino> pieces, int piece_number) {
+        std::vector<Pentomino> pieces, int piece_number,
+        bool reflect_symmetric = false, bool rotate_symmetric = false) {
     std::vector<std::array<std::array<char, 8>, 8>> solutions;
 
     // base case
@@ -104,7 +108,7 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
                     solutions.insert(solutions.end(), sub_solutions.begin(),
                                      sub_solutions.end());
                     
-                    if (!symmetrical) {
+                    if (!symmetrical && !reflect_symmetric) {
                         std::array<std::array<char, 8>, 8> f_grid;
                         f_grid = placePentomino(base_grid,
                                                 pieces[piece_number], x, y,
@@ -117,6 +121,9 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
                                          sub_solutions.end());
                     }
                 }
+                if (rotate_symmetric) {
+                    break;
+                }
             }
         }
     }
@@ -125,32 +132,31 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
 
 int main(int argc, char const *argv[]) {
     std::vector<Pentomino> pieces;
-    int u_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
-    pieces.push_back(Pentomino(u_shape, 'u'));
-    int n_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
-    pieces.push_back(Pentomino(n_shape, 'n'));
-    int v_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {0, 1}, {0, 2}};
-    pieces.push_back(Pentomino(v_shape, 'v'));
-    int x_shape[5][2] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
-    pieces.push_back(Pentomino(x_shape, 'x'));
-    int i_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
-    pieces.push_back(Pentomino(i_shape, 'i'));
-    int y_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
-    pieces.push_back(Pentomino(y_shape, 'y'));
-    int t_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {2, 0}};
-    pieces.push_back(Pentomino(t_shape, 't'));
-    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
-    pieces.push_back(Pentomino(p_shape, 'p'));
-    int w_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {2, 2}};
-    pieces.push_back(Pentomino(w_shape, 'w'));
-    int l_shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
-    pieces.push_back(Pentomino(l_shape, 'l'));
     int f_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
     pieces.push_back(Pentomino(f_shape, 'f'));
+    int i_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
+    pieces.push_back(Pentomino(i_shape, 'i'));
+    int l_shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
+    pieces.push_back(Pentomino(l_shape, 'l'));
+    int n_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
+    pieces.push_back(Pentomino(n_shape, 'n'));
+    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
+    pieces.push_back(Pentomino(p_shape, 'p'));
+    int t_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {2, 0}};
+    pieces.push_back(Pentomino(t_shape, 't'));
+    int u_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
+    pieces.push_back(Pentomino(u_shape, 'u'));
+    int v_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {0, 1}, {0, 2}};
+    pieces.push_back(Pentomino(v_shape, 'v'));
+    int w_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {2, 2}};
+    pieces.push_back(Pentomino(w_shape, 'w'));
+    int x_shape[5][2] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
+    pieces.push_back(Pentomino(x_shape, 'x'));
+    int y_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
+    pieces.push_back(Pentomino(y_shape, 'y'));
     int z_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {2, 1}, {2, 2}};
     pieces.push_back(Pentomino(z_shape, 'z'));
 
-    // TODO: refactor a to depth-first approach
     std::vector<std::array<std::array<char, 8>, 8>> solutions;
     for (int x = 0; x < 4; x++) {
         for (int y = 0; y <= x; y++) {
@@ -163,7 +169,8 @@ int main(int argc, char const *argv[]) {
             grid[x+1][y+1] = '4';
             grid[x][y+1] = '4';
             std::vector<std::array<std::array<char, 8>, 8>> sub_solutions;
-            sub_solutions = checkPentomino(grid, pieces, 0);
+            sub_solutions = checkPentomino(grid, pieces, 0, x == 4 || y == x,
+                                           y == 4);
             solutions.insert(solutions.end(), sub_solutions.begin(),
                              sub_solutions.end());
         }
