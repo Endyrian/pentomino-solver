@@ -88,35 +88,31 @@ int main(int argc, char const *argv[]) {
             solutions.push_back(grid);
         }
     }
-    
-    std::vector<Pentomino> pieces;
-    int shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
-    pieces.push_back(Pentomino(shape, 'u'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
-    pieces.push_back(Pentomino(shape, 'n'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {0, 1}, {0, 2}};
-    pieces.push_back(Pentomino(shape, 'v'));
-    int shape[5][2] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
-    pieces.push_back(Pentomino(shape, 'x'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
-    pieces.push_back(Pentomino(shape, 'i'));
-    int shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
-    pieces.push_back(Pentomino(shape, 'y'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {2, 0}};
-    pieces.push_back(Pentomino(shape, 't'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
-    pieces.push_back(Pentomino(shape, 'p'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {2, 2}};
-    pieces.push_back(Pentomino(shape, 'w'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
-    pieces.push_back(Pentomino(shape, 'l'));
-    int shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
-    pieces.push_back(Pentomino(shape, 'f'));
-    int shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {2, 1}, {2, 2}};
-    pieces.push_back(Pentomino(shape, 'z'));
-    for (auto &&piece : pieces) {
-        solutions = addPentomino(solutions, piece);
-    }
+
+    int u_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
+    solutions = addPentomino(solutions, Pentomino(u_shape, 'u'));
+    int n_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
+    solutions = addPentomino(solutions, Pentomino(n_shape, 'n'));
+    int v_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {0, 1}, {0, 2}};
+    solutions = addPentomino(solutions, Pentomino(v_shape, 'v'));
+    int x_shape[5][2] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
+    solutions = addPentomino(solutions, Pentomino(x_shape, 'x'));
+    int i_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
+    solutions = addPentomino(solutions, Pentomino(i_shape, 'i'));
+    int y_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
+    solutions = addPentomino(solutions, Pentomino(y_shape, 'y'));
+    int t_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {2, 0}};
+    solutions = addPentomino(solutions, Pentomino(t_shape, 't'));
+    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
+    solutions = addPentomino(solutions, Pentomino(p_shape, 'p'));
+    int w_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {2, 2}};
+    solutions = addPentomino(solutions, Pentomino(w_shape, 'w'));
+    int l_shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
+    solutions = addPentomino(solutions, Pentomino(l_shape, 'l'));
+    int f_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
+    solutions = addPentomino(solutions, Pentomino(f_shape, 'f'));
+    int z_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {2, 1}, {2, 2}};
+    solutions = addPentomino(solutions, Pentomino(z_shape, 'z'));
 
     for (auto &&solved : solutions) {
         std::cout << "-----" << std::endl;
