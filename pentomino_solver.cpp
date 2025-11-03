@@ -99,7 +99,7 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
             if (piece_number == 0) {
-                std::cout << square_positions_checked << (x / 8 + y / 64) * 10
+                std::cout << square_positions_checked << (x / 8.0 + y / 64.0) * 10
                         << '%' << std::endl; // print progress
             }
             for (int r = 0; r < rotations; r++) {
