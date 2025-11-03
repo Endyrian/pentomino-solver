@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 
+int square_positions_checked = 0;
+
 // Returns whether `piece` can fit in `grid` at the specified location after
 //  undergoing thespecified transformations.
 bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
@@ -96,6 +98,10 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
     bool symmetrical = pieces[piece_number].isSymmetrical();
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
+            if (piece_number == 0) {
+                std::cout << square_positions_checked << (x / 8 + y / 64) * 10
+                        << '%' << std::endl; // print progress
+            }
             for (int r = 0; r < rotations; r++) {
                 if (canPlacePentomino(base_grid, pieces[piece_number], x, y,
                                       false, r)) {
@@ -134,14 +140,10 @@ int main(int argc, char const *argv[]) {
     std::vector<Pentomino> pieces;
     int f_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
     pieces.push_back(Pentomino(f_shape, 'f'));
+    int x_shape[5][2] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
+    pieces.push_back(Pentomino(x_shape, 'x'));
     int i_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}};
     pieces.push_back(Pentomino(i_shape, 'i'));
-    int l_shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
-    pieces.push_back(Pentomino(l_shape, 'l'));
-    int n_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
-    pieces.push_back(Pentomino(n_shape, 'n'));
-    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
-    pieces.push_back(Pentomino(p_shape, 'p'));
     int t_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {2, 0}};
     pieces.push_back(Pentomino(t_shape, 't'));
     int u_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
@@ -150,12 +152,17 @@ int main(int argc, char const *argv[]) {
     pieces.push_back(Pentomino(v_shape, 'v'));
     int w_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {2, 2}};
     pieces.push_back(Pentomino(w_shape, 'w'));
-    int x_shape[5][2] = {{0, 1}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
-    pieces.push_back(Pentomino(x_shape, 'x'));
-    int y_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
-    pieces.push_back(Pentomino(y_shape, 'y'));
     int z_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {2, 1}, {2, 2}};
     pieces.push_back(Pentomino(z_shape, 'z'));
+    int l_shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
+    pieces.push_back(Pentomino(l_shape, 'l'));
+    int n_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
+    pieces.push_back(Pentomino(n_shape, 'n'));
+    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
+    pieces.push_back(Pentomino(p_shape, 'p'));
+    int y_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
+    pieces.push_back(Pentomino(y_shape, 'y'));
+    std::cout << "Pentominoes initialized" << std::endl;
 
     std::vector<std::array<std::array<char, 8>, 8>> solutions;
     for (int x = 0; x < 4; x++) {
@@ -173,8 +180,10 @@ int main(int argc, char const *argv[]) {
                                            y == 3);
             solutions.insert(solutions.end(), sub_solutions.begin(),
                              sub_solutions.end());
+            square_positions_checked++;
         }
     }
+    std::cout << "100%" << std::endl;
 
     for (auto &&solved : solutions) {
         std::cout << "-----" << std::endl;
