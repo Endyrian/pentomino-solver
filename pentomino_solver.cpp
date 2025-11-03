@@ -169,8 +169,8 @@ int main(int argc, char const *argv[]) {
             grid[x+1][y+1] = '4';
             grid[x][y+1] = '4';
             std::vector<std::array<std::array<char, 8>, 8>> sub_solutions;
-            sub_solutions = checkPentomino(grid, pieces, 0, x == 4 || y == x,
-                                           y == 4);
+            sub_solutions = checkPentomino(grid, pieces, 0, x == 3 || y == x,
+                                           y == 3);
             solutions.insert(solutions.end(), sub_solutions.begin(),
                              sub_solutions.end());
         }
