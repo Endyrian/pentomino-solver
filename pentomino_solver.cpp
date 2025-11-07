@@ -79,6 +79,17 @@ std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
     return new_grids;
 }
 
+// Returns a vector of all possible solutions containing all the pieces
+// specified in `pieces`, where all pieces numbered less that `piece_number`
+// are in the same locations as they are in `base_grid`. `unique_rotations`
+// indicates how many ways the piece can be rotated without resulting in
+// duplicate grids. `reflect_unique` indicates whether flipping the piece
+// will result in functionally distinct grids.
+std::vector<std::array<std::array<char, 8>, 8>> solveGrid(
+        std::array<std::array<char, 8>, 8> base_grid,
+        std::vector<Pentomino> pieces, int piece_number,
+        int unique_rotations = 4, bool reflect_unique = true);
+
 // If the specified placement of the piece at index `piece_number` in `pieces`
 // in `base_grid` is valid, returns the result of running `solveGrid()` on that
 // placement. Otherwise, returns an empty vector.
@@ -116,16 +127,10 @@ std::vector<std::array<std::array<char, 8>, 8>> tryPentomino(
                      reflect_unique);
 }
 
-// Returns a vector of all possible solutions containing all the pieces
-// specified in `pieces`, where all pieces numbered less that `piece_number`
-// are in the same locations as they are in `base_grid`. `unique_rotations`
-// indicates how many ways the piece can be rotated without resulting in
-// duplicate grids. `reflect_unique` indicates whether flipping the piece
-// will result in functionally distinct grids.
 std::vector<std::array<std::array<char, 8>, 8>> solveGrid(
         std::array<std::array<char, 8>, 8> base_grid,
         std::vector<Pentomino> pieces, int piece_number,
-        int unique_rotations = 4, bool reflect_unique = true) {
+        int unique_rotations, bool reflect_unique) {
     std::vector<std::array<std::array<char, 8>, 8>> solutions;
 
     // base case
