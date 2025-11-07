@@ -15,10 +15,10 @@ bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
     int height = piece.getHeight();
     int width = piece.getWidth();
     if (rotation % 2 == 0) {
-        if (x + height > 8 && y || width > 8) {
+        if (x + height >= 8 || y + width >= 8) {
             return false;
         }
-    } else if (y + height > 8 && x + width > 8) {
+    } else if (y + height >= 8 || x + width >= 8) {
         return false;
     }
     std::array<std::array<int, 2>, piece.blocks_> coords = piece.orientShape(
