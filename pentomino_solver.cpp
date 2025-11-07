@@ -8,7 +8,8 @@
 int square_positions_checked = 0;
 
 // Returns whether `piece` can fit in `grid` at the specified location after
-//  undergoing thespecified transformations.
+// undergoing thespecified transformations.
+// DEPRECATED: Merged into `tryPentomino()`.
 bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
                        Pentomino piece, int x, int y, bool flip,
                        int rotation) {
@@ -33,6 +34,7 @@ bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
 
 // Returns a version of `grid` with `piece` added at the specified location
 // after undergoing the specified transformations.
+// DEPRECATED: Merged into `tryPentomino()`.
 std::array<std::array<char, 8>, 8> placePentomino(
         std::array<std::array<char, 8>, 8> grid, Pentomino piece,
         int x, int y, bool flip, int rotation) {
@@ -48,7 +50,7 @@ std::array<std::array<char, 8>, 8> placePentomino(
 // Returns a vector of all possible puzzle grid arrangements which can be
 // obtained by adding `piece` in a valid location to one of the grids in
 // `old_grids`.
-// DEPRECATED: uses too much memory
+// DEPRECATED: uses too much memory.
 std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
         std::vector<std::array<std::array<char, 8>, 8>> old_grids,
         Pentomino piece) {
@@ -75,6 +77,43 @@ std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
         }
     }
     return new_grids;
+}
+
+// If the specified placement of the piece at index `piece_number` in `pieces`
+// in `base_grid` is valid, returns the result of running `solveGrid()` on that
+// placement. Otherwise, returns an empty vector.
+std::vector<std::array<std::array<char, 8>, 8>> tryPentomino(
+        std::array<std::array<char, 8>, 8> base_grid,
+        std::vector<Pentomino> pieces, int piece_number,
+        int x, int y, bool flip, int rotation,
+        int unique_rotations = 4, bool reflect_unique = true) {
+    std::vector<std::array<std::array<char, 8>, 8>> no_solutions;
+
+    // Check if inbounds
+    int height = pieces[piece_number].getHeight();
+    int width = pieces[piece_number].getWidth();
+    if (rotation % 2 == 0) {
+        if (x + height >= 8 || y + width >= 8) {
+            return no_solutions;
+        }
+    } else if (y + height >= 8 || x + width >= 8) {
+        return no_solutions;
+    }
+
+    // Check if non-overlapping
+    std::array<std::array<char, 8>, 8> new_grid = base_grid;
+    std::array<std::array<int, 2>, Pentomino::blocks_> coords =
+            pieces[piece_number].orientShape(flip, rotation);
+    for (auto &&block : coords) {
+        if (base_grid[x + block[0]][y + block[1]] != '0') {
+            return no_solutions;
+        }
+        new_grid[x + block[0]][y + block[1]] = pieces[piece_number].getLetter();
+    }
+    
+    // Pass through to next layer of solveGrid
+    return solveGrid(new_grid, pieces, piece_number + 1, unique_rotations,
+                     reflect_unique);
 }
 
 // Returns a vector of all possible solutions containing all the pieces
@@ -107,31 +146,22 @@ std::vector<std::array<std::array<char, 8>, 8>> solveGrid(
             }
 
             for (int r = 0; r < rotations && r < unique_rotations; r++) {
-                if (canPlacePentomino(base_grid, pieces[piece_number], x, y,
-                                      false, r)) {
-                    std::array<std::array<char, 8>, 8> p_grid;
-                    p_grid = placePentomino(base_grid, pieces[piece_number],
-                                            x, y, false, r);
+                std::vector<std::array<std::array<char, 8>, 8>>
+                sub_solutions = tryPentomino(base_grid, pieces,
+                                             piece_number + 1, x, y, false, r,
+                                             next_unique_rotations,
+                                             reflect_unique || asymmetrical);
+                solutions.insert(solutions.end(), sub_solutions.begin(),
+                                 sub_solutions.end());
+                
+                if (asymmetrical && reflect_unique) {
                     std::vector<std::array<std::array<char, 8>, 8>>
-                    sub_solutions = solveGrid(p_grid, pieces, piece_number + 1,
-                                              next_unique_rotations,
-                                              reflect_unique || asymmetrical);
-                    solutions.insert(solutions.end(), sub_solutions.begin(),
+                    sub_solutions = tryPentomino(base_grid, pieces,
+                                                 piece_number + 1, x, y, false,
+                                                 r, next_unique_rotations);
+                    solutions.insert(solutions.end(),
+                                     sub_solutions.begin(),
                                      sub_solutions.end());
-                    
-                    if (asymmetrical && reflect_unique) {
-                        std::array<std::array<char, 8>, 8> f_grid;
-                        f_grid = placePentomino(base_grid,
-                                                pieces[piece_number], x, y,
-                                                true, r);
-                        std::vector<std::array<std::array<char, 8>, 8>>
-                        sub_solutions = solveGrid(f_grid, pieces,
-                                                  piece_number + 1,
-                                                  next_unique_rotations);
-                        solutions.insert(solutions.end(),
-                                         sub_solutions.begin(),
-                                         sub_solutions.end());
-                    }
                 }
             }
         }
