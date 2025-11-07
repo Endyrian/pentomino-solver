@@ -15,10 +15,10 @@ bool canPlacePentomino(std::array<std::array<char, 8>, 8> grid,
     int height = piece.getHeight();
     int width = piece.getWidth();
     if (rotation % 2 == 0) {
-        if (x + height >= 8 && y || width >= 8) {
+        if (x + height > 8 && y || width > 8) {
             return false;
         }
-    } else if (y + height >= 8 && x + width >= 8) {
+    } else if (y + height > 8 && x + width > 8) {
         return false;
     }
     std::array<std::array<int, 2>, piece.blocks_> coords = piece.orientShape(
@@ -83,7 +83,7 @@ std::vector<std::array<std::array<char, 8>, 8>> addPentomino(
 // indicates how many ways the piece can be rotated without resulting in
 // duplicate grids. `reflect_unique` indicates whether flipping the piece
 // will result in functionally distinct grids.
-std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
+std::vector<std::array<std::array<char, 8>, 8>> solveGrid(
         std::array<std::array<char, 8>, 8> base_grid,
         std::vector<Pentomino> pieces, int piece_number,
         int unique_rotations = 4, bool reflect_unique = true) {
@@ -97,7 +97,7 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
     
     // recursive case
     int rotations = pieces[piece_number].getRotations();
-    bool symmetrical = pieces[piece_number].isSymmetrical();
+    bool asymmetrical = !pieces[piece_number].isSymmetrical();
     int next_unique_rotations = std::max(unique_rotations, rotations);
     for (int x = 0; x < 8; x++) {
         for (int y = 0; y < 8; y++) {
@@ -113,23 +113,21 @@ std::vector<std::array<std::array<char, 8>, 8>> checkPentomino(
                     p_grid = placePentomino(base_grid, pieces[piece_number],
                                             x, y, false, r);
                     std::vector<std::array<std::array<char, 8>, 8>>
-                    sub_solutions = checkPentomino(p_grid, pieces,
-                                                   piece_number + 1,
-                                                   next_unique_rotations,
-                                                   reflect_unique ||
-                                                   !symmetrical);
+                    sub_solutions = solveGrid(p_grid, pieces, piece_number + 1,
+                                              next_unique_rotations,
+                                              reflect_unique || asymmetrical);
                     solutions.insert(solutions.end(), sub_solutions.begin(),
                                      sub_solutions.end());
                     
-                    if (!symmetrical && reflect_unique) {
+                    if (asymmetrical && reflect_unique) {
                         std::array<std::array<char, 8>, 8> f_grid;
                         f_grid = placePentomino(base_grid,
                                                 pieces[piece_number], x, y,
                                                 true, r);
                         std::vector<std::array<std::array<char, 8>, 8>>
-                        sub_solutions = checkPentomino(f_grid, pieces,
-                                                       piece_number + 1,
-                                                       next_unique_rotations);
+                        sub_solutions = solveGrid(f_grid, pieces,
+                                                  piece_number + 1,
+                                                  next_unique_rotations);
                         solutions.insert(solutions.end(),
                                          sub_solutions.begin(),
                                          sub_solutions.end());
@@ -151,22 +149,22 @@ int main(int argc, char const *argv[]) {
     pieces.push_back(Pentomino(z_shape, 'z'));
     int t_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {2, 0}};
     pieces.push_back(Pentomino(t_shape, 't'));
-    int u_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
-    pieces.push_back(Pentomino(u_shape, 'u'));
     int v_shape[5][2] = {{0, 0}, {1, 0}, {2, 0}, {0, 1}, {0, 2}};
     pieces.push_back(Pentomino(v_shape, 'v'));
     int w_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {2, 2}};
     pieces.push_back(Pentomino(w_shape, 'w'));
-    int f_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
-    pieces.push_back(Pentomino(f_shape, 'f'));
+    int u_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {1, 2}, {0, 2}};
+    pieces.push_back(Pentomino(u_shape, 'u'));
     int l_shape[5][2] = {{0, 0}, {1, 0}, {0, 1}, {0, 2}, {0, 3}};
     pieces.push_back(Pentomino(l_shape, 'l'));
     int n_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {3, 1}};
     pieces.push_back(Pentomino(n_shape, 'n'));
-    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
-    pieces.push_back(Pentomino(p_shape, 'p'));
     int y_shape[5][2] = {{0, 0}, {0, 1}, {1, 1}, {0, 2}, {0, 3}};
     pieces.push_back(Pentomino(y_shape, 'y'));
+    int f_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {2, 1}, {1, 2}};
+    pieces.push_back(Pentomino(f_shape, 'f'));
+    int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
+    pieces.push_back(Pentomino(p_shape, 'p'));
     std::cout << "Pentominoes initialized, starting search." << std::endl;
 
     std::vector<std::array<std::array<char, 8>, 8>> solutions;
@@ -181,8 +179,8 @@ int main(int argc, char const *argv[]) {
             grid[x+1][y+1] = '4';
             grid[x][y+1] = '4';
             std::vector<std::array<std::array<char, 8>, 8>> sub_solutions;
-            sub_solutions = checkPentomino(grid, pieces, 0, (y == 3) ? 1 : 4,
-                                           x != 3 && y != x);
+            sub_solutions = solveGrid(grid, pieces, 0, (y == 3) ? 1 : 4,
+                                      x != 3 && y != x);
             solutions.insert(solutions.end(), sub_solutions.begin(),
                              sub_solutions.end());
             square_positions_checked++;
