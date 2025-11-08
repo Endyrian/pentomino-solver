@@ -90,9 +90,9 @@ std::vector<std::array<std::array<char, 8>, 8>> solveGrid(
         std::vector<Pentomino> pieces, int piece_number,
         int unique_rotations = 4, bool reflect_unique = true);
 
-// If the specified placement of the piece at index `piece_number` in `pieces`
-// in `base_grid` is valid, returns the result of running `solveGrid()` on that
-// placement. Otherwise, returns an empty vector.
+// If the specified placement in `base_grid` of the piece at index
+// `piece_number` in `pieces` is valid, returns the result of running
+// `solveGrid()` on that placement. Otherwise, returns an empty vector.
 std::vector<std::array<std::array<char, 8>, 8>> tryPentomino(
         std::array<std::array<char, 8>, 8> base_grid,
         std::vector<Pentomino> pieces, int piece_number,
@@ -113,13 +113,59 @@ std::vector<std::array<std::array<char, 8>, 8>> tryPentomino(
 
     // Check if non-overlapping
     std::array<std::array<char, 8>, 8> new_grid = base_grid;
-    std::array<std::array<int, 2>, Pentomino::blocks_> coords =
-            pieces[piece_number].orientShape(flip, rotation);
+    std::array<std::array<int, 2>, Pentomino::blocks_> coords
+            = pieces[piece_number].orientShape(flip, rotation);
     for (auto &&block : coords) {
         if (base_grid[x + block[0]][y + block[1]] != '0') {
             return no_solutions;
         }
-        new_grid[x + block[0]][y + block[1]] = pieces[piece_number].getLetter();
+        new_grid[x + block[0]][y + block[1]]
+                = pieces[piece_number].getLetter();
+    }
+
+    // Check if all empty regions have size divisible by 5
+    std::array<std::array<int, 8>, 8> regions;
+    std::vector<int> region_sizes;
+    for (int x1 = 0; x1 < 8; x1++) {
+        for (int y1 = 0; y1 < 8; y1++) {
+            if (new_grid[x1][y1] != '0') {
+                regions[x1][y1] = -1;
+            } else if (x1 > 0 && regions[x1 - 1][y1] >= 0) {
+                int current_region = regions[x1 - 1][y1];
+                regions[x1][y1] = current_region;
+                region_sizes[current_region]++;
+                if (y1 > 0 && regions[x1][y1 - 1] >= 0
+                        && regions[x1][y1 - 1] != current_region) {
+                    int duplicate_region = regions[x1][y1 - 1];
+                    region_sizes[current_region]
+                            += region_sizes[duplicate_region];
+                    for (int x2 = 0; x2 <= x1; x2++) {
+                        for (int y2 = 0; y2 < 8; y2++) {
+                            if (regions[x2][y2] == duplicate_region) {
+                                regions[x2][y2] = current_region;
+                            }
+                            if (regions[x2][y2] > duplicate_region) {
+                                regions[x2][y2]--;
+                            }
+                            if (x2 == x1 && y2 == y1) { break; }
+                        }
+                    }
+                    region_sizes.erase(region_sizes.begin()
+                                       + duplicate_region);
+                }
+            } else if (y1 > 0 && regions[x1][y1 - 1] >= 0) {
+                regions[x1][y1] = regions[x1][y1 - 1];
+                region_sizes[regions[x1][y1]]++;
+            } else {
+                regions[x1][y1] = region_sizes.size();
+                region_sizes.push_back(1);
+            }
+        }
+    }
+    for (auto &&r : region_sizes) {
+        if (r % 5 != 0) {
+            return no_solutions;
+        }
     }
     
     // Pass through to next layer of solveGrid
