@@ -21,5 +21,3 @@ To install, download all code and header files from this repo into the same fold
 ## Usage
 
 To use, run your created executable in the command line. You should see periodic statements printed out to indicate progress. Upon completion, a list of all possible solutions should be printed.
-
-WARNING: This program uses a brute force approach and is estimated to take approximately 18 months to run in its current state.
