@@ -208,7 +208,7 @@ std::vector<std::array<std::array<char, 8>, 8>> solveGrid(
                 if (asymmetrical && reflect_unique) {
                     std::vector<std::array<std::array<char, 8>, 8>>
                     sub_solutions = tryPentomino(base_grid, pieces,
-                                                 piece_number, x, y, false, r,
+                                                 piece_number, x, y, true, r,
                                                  next_unique_rotations);
                     solutions.insert(solutions.end(),
                                      sub_solutions.begin(),
