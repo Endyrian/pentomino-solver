@@ -2,7 +2,7 @@
 
 #include <array>
 #include <stdexcept>
-#include <iostream>
+// #include <iostream>
 
 Pentomino::Pentomino(int shape[blocks_][2], char letter) : letter_(letter) {
     // Initialize shape
@@ -34,6 +34,7 @@ Pentomino::Pentomino(int shape[blocks_][2], char letter) : letter_(letter) {
     width_ -= y_min;
     
     // Calculate reflectional and rotational symmetry
+    // TODO: fix
     bool vertically_symmetric = true;
     bool horizontally_symmetric = true;
     bool pos_diag_symmetric = true;
@@ -48,25 +49,31 @@ Pentomino::Pentomino(int shape[blocks_][2], char letter) : letter_(letter) {
         bool order_2_paired = false;
         bool order_4_paired = false;
         for (int j = 0; j < blocks_; j++) {
-            vertically_paired |= (height_ - shape_[i][0] == shape_[j][0] &&
-                                  shape_[i][1] == shape_[j][1]);
-            horizontally_paired |= (shape_[i][0] == shape_[j][0] &&
-                                    width_ - shape_[i][1] == shape_[j][1]);
-            pos_diag_paired |= (shape_[i][0] == shape_[j][1] &&
-                                shape_[i][1] == shape_[j][0]);
-            pos_diag_paired |= (height_ - shape_[i][0] == shape_[j][1] &&
-                                shape_[i][1] == height_ - shape_[j][0]);
-            order_2_paired |= (height_ - shape_[i][0] == shape_[j][0] &&
-                               width_ - shape_[i][1] == shape_[j][1]);
-            order_4_paired |= (width_ - shape_[i][1] == shape_[j][0] &&
-                               shape_[i][0] == shape_[j][1]);
+            vertically_paired = vertically_paired
+                                || (height_ - shape_[i][0] == shape_[j][0]
+                                    && shape_[i][1] == shape_[j][1]);
+            horizontally_paired = horizontally_paired
+                                  || (shape_[i][0] == shape_[j][0]
+                                      && width_ - shape_[i][1] == shape_[j][1]);
+            pos_diag_paired = pos_diag_paired
+                              || (shape_[i][0] == shape_[j][1]
+                                  && shape_[i][1] == shape_[j][0]);
+            neg_diag_paired = neg_diag_paired
+                              || (height_ - shape_[i][0] == shape_[j][1]
+                                  && shape_[i][1] == height_ - shape_[j][0]);
+            order_2_paired = order_2_paired
+                             || (height_ - shape_[i][0] == shape_[j][0]
+                                 && width_ - shape_[i][1] == shape_[j][1]);
+            order_4_paired = order_4_paired
+                             || (width_ - shape_[i][1] == shape_[j][0]
+                                 && shape_[i][0] == shape_[j][1]);
         }
-        vertically_symmetric &= horizontally_paired;
-        horizontally_symmetric &= vertically_paired;
-        pos_diag_symmetric &= pos_diag_paired;
-        neg_diag_symmetric &= neg_diag_paired;
-        order_2_symmetric &= order_2_paired;
-        order_4_symmetric &= order_4_paired;
+        vertically_symmetric = vertically_symmetric && horizontally_paired;
+        horizontally_symmetric = horizontally_symmetric && vertically_paired;
+        pos_diag_symmetric = pos_diag_symmetric && pos_diag_paired;
+        neg_diag_symmetric = neg_diag_symmetric && neg_diag_paired;
+        order_2_symmetric = order_2_symmetric && order_2_paired;
+        order_4_symmetric = order_4_symmetric && order_4_paired;
     }
     symmetrical_ = vertically_symmetric || horizontally_symmetric ||
                    pos_diag_symmetric || neg_diag_symmetric;
