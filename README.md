@@ -20,4 +20,4 @@ To install, download all code and header files from this repo into the same fold
 
 ## Usage
 
-To use, run your created executable in the command line. You should see periodic statements printed out to indicate progress. Upon completion, a list of all possible solutions should be printed.
+To use, run your created executable in the command line. If you would like the solutions to be printed to a file, include the name of the file as a command line argument (this option is recommended). You should see periodic statements printed out to indicate progress. Upon completion, a list of all possible solutions should be printed.
