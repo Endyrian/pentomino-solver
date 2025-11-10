@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 
 int square_positions_checked = 0;
@@ -246,7 +247,7 @@ int main(int argc, char const *argv[]) {
     pieces.push_back(Pentomino(f_shape, 'f'));
     int p_shape[5][2] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}, {2, 0}};
     pieces.push_back(Pentomino(p_shape, 'p'));
-    std::cout << "Pentominoes initialized, starting search." << std::endl;
+    std::cout << "Pentominoes initialized, starting search..." << std::endl;
 
     std::vector<std::array<std::array<char, 8>, 8>> solutions;
     for (int x = 0; x < 4; x++) {
@@ -269,8 +270,20 @@ int main(int argc, char const *argv[]) {
     }
     std::cout << "100%" << std::endl << "Search complete." << std::endl;
 
+    std::cout << "Printing solutions" << std::endl;
+    std::streambuf *coutbuf = std::cout.rdbuf();
+    if (argc > 1) {
+        std::ofstream solution_file(argv[1]);
+        if (solution_file.good()) {
+            std::cout.rdbuf(solution_file.rdbuf());
+        } else {
+            std::cout << "Could not open file: " << argv[1] << std::endl;
+            std::cout << "Solutions will be printed to command line instead."
+                      << std::endl;
+        }
+    }
     for (auto &&solved : solutions) {
-        std::cout << "-----" << std::endl;
+        std::cout << "---------------" << std::endl;
         for (auto &&x : solved) {
             for (auto &&y : x) {
                 std::cout << y << ' ';
@@ -278,6 +291,8 @@ int main(int argc, char const *argv[]) {
             std::cout << std::endl;
         }
     }
-    std::cout << "-----" << std::endl;
+    std::cout << "---------------" << std::endl;
+    std::cout.rdbuf(coutbuf);
+    std::cout << "Solutions printed." << std::endl;
     return 0;
 }
