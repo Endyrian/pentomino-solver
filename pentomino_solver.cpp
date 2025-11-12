@@ -272,8 +272,9 @@ int main(int argc, char const *argv[]) {
 
     std::cout << "Printing solutions" << std::endl;
     std::streambuf *coutbuf = std::cout.rdbuf();
+    std::ofstream solution_file;
     if (argc > 1) {
-        std::ofstream solution_file(argv[1]);
+        solution_file = std::ofstream(argv[1]);
         if (solution_file.good()) {
             std::cout.rdbuf(solution_file.rdbuf());
         } else {
